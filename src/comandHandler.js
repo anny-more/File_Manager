@@ -1,14 +1,12 @@
-import { statSync, accessSync } from "fs";
 import { readdir, writeFile } from "fs/promises";
 import path from "path";
 
 class ComandHandler {
 
-    #getPath = (soursePath) => {
+   /* #getPath = (soursePath) => {
         const pathArray = soursePath.split(path.sep);
-        console.log('from getPath', ...pathArray, path.resolve(...pathArray) )
         return path.relative(path.resolve(), path.resolve(...pathArray));
-    }
+    }*/
     logPath = () => {
         console.log('Now You are in: ', process.cwd());
     }
@@ -18,10 +16,8 @@ class ComandHandler {
     }
 
     cd = async ([path]) => {
-        const pathToDir = this.#getPath(path);
-        console.log('console from cd', path, 'path', pathToDir);
         try {
-            process.chdir(pathToDir);
+            process.chdir(path);
             console.log('Dir changed sucсessfully!');
         } catch(err) {
             console.log('Wrong path, try again');
@@ -30,30 +26,30 @@ class ComandHandler {
 
     ls = async () => {
         try {
-            const listEntries = await readdir(process.cwd());
-            
-            listEntries.sort()
-                .map(file => {
+            const listEntries = await readdir(process.cwd(), {withFileTypes: true});
+            const result = [];
+            listEntries
+                .forEach(file => {
                     let Type;
-                    try {
-                        accessSync(file)
-                        Type = statSync(file).isDirectory() ? 'directory' : 'file';
-                    } catch {
-                        Type = '--no access--'
-                    }
-                    
+                        if (file.isDirectory()) {
+                            Type = 'directory'
+                        } else if (file.isFile()) {
+                            Type = 'file'
+                        } else {
+                            Type = '--unknown--'
+                        }
                     const string =  {
-                        Name: file,
+                        Name: file.name,
                         Type
                     };
-                    
-                return string;
+                result.push(string);
             });
-            console.table(listEntries);
+
+            console.table(result);
+
         } catch(err) {
             console.log(err)
         }
-        
     }
 
     add = async ([path]) => {
