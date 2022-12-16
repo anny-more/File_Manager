@@ -4,6 +4,7 @@ import { rm as remoover } from "fs/promises";
 import path, { resolve } from "path";
 import os from 'os';
 import SystemInfo from "./SystemInfo.js";
+import CalcHash from "./CalcHash.js";
 
 
 class ComandHandler {
@@ -143,6 +144,10 @@ class ComandHandler {
             console.log('Print relevant arg')
             return
         };
+    }
+    hash = async([arg]) => {
+        const result = CalcHash(arg);
+        console.log(result)
     }
 };
 
