@@ -9,7 +9,7 @@ class SystemInfo {
     cpus = () => {
         console.log(`There is ${os.cpus().length} CPUs`);
         os.cpus().forEach((item, index) => {
-            console.log(`CPU${index + 1}: model is ${item.model}, clock rate is ${item.speed/1000}GHz`);
+            console.log(`CPU${index + 1}: model is ${item.model}, clock rate is ${item.speed/1000} GHz`);
         })
     }
     homedir = () => {

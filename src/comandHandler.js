@@ -2,9 +2,9 @@ import {existsSync, createReadStream, createWriteStream } from "fs";
 import { readdir, writeFile, rename, mkdir} from "fs/promises";
 import { rm as remoover } from "fs/promises";
 import path, { resolve } from "path";
-import os from 'os';
 import SystemInfo from "./SystemInfo.js";
-import CalcHash from "./CalcHash.js";
+import CalcHash from "./calcHash.js";
+import BrotliAlg from "./BrotliAlg.js";
 
 
 class ComandHandler {
@@ -145,10 +145,19 @@ class ComandHandler {
             return
         };
     }
+    //Calc hash
     hash = async([arg]) => {
         const result = CalcHash(arg);
         console.log(result)
     }
+    //Compress, decompress
+    compress = async(array) => {
+        BrotliAlg.compress(array);
+    }
+    decompress = async(array) => {
+        BrotliAlg.decompress(array)        
+    }
+
 };
 
 export default new ComandHandler();
