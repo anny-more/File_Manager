@@ -6,7 +6,7 @@ export const router = async (data) => {
     try {
         const arrayFromData = data.split(' ');
         const [comand, ...rest] = arrayFromData;
-        console.log('console from router, comand = ', comand, 'rest = ', rest)
+       // console.log('console from router, comand = ', comand, 'rest = ', rest)
         await ComandHandler[comand](rest);
 
     } catch(err) {

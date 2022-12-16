@@ -2,9 +2,9 @@ import {existsSync, createReadStream, createWriteStream } from "fs";
 import { readdir, writeFile, rename, mkdir} from "fs/promises";
 import { rm as remoover } from "fs/promises";
 import path, { resolve } from "path";
-import { pipeline} from "stream";
-import exec from 'child_process';
-import { rejects } from "assert";
+import os from 'os';
+import SystemInfo from "./SystemInfo.js";
+
 
 class ComandHandler {
     #getPath = (soursePath) => {
@@ -133,6 +133,16 @@ class ComandHandler {
         } catch(err) {
             console.log('Smth went wrong!'. err)
         }
+    }
+    //Operating system info
+    os = async([arg]) => {
+        if (arg.startsWith('--')) {
+            const param = arg.replace('--', '');
+            SystemInfo[param]();
+        } else {
+            console.log('Print relevant arg')
+            return
+        };
     }
 };
 
