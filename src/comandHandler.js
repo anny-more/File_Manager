@@ -82,6 +82,16 @@ class ComandHandler {
                     };
                 result.push(string);
             });
+            result.sort(function(a, b) {
+                if (a.Type < b.Type) {
+                    return -1
+                }
+                if (a.Type > b.Type) {
+                    return 1
+                }
+                return a.name - b.name
+                
+            })
 
             console.table(result);
 
