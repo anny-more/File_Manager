@@ -5,7 +5,6 @@ import { router } from "./src/router.js";
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    promt: '>>'
   });
 
 rl.on('line', (line) => {
@@ -14,14 +13,18 @@ rl.on('line', (line) => {
         TalkWithUser.sayBye();
         process.exit()
     }
-
-    router(line.toString());
-    rl.promt;
-
+  
+    router(line.toString())
+    .finally(() => {
+        TalkWithUser.sayWorkingDir()
+    })
+    
 }).on('close', () => {
     TalkWithUser.sayBye();
 });
 
-process.nextTick(() => TalkWithUser.sayHi());
-
-//os.homedir()
+process.nextTick(() => {
+    TalkWithUser.sayHi();
+    router('start');
+    TalkWithUser.sayWorkingDir()
+});

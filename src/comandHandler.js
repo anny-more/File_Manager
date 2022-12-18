@@ -1,22 +1,52 @@
 import {existsSync, createReadStream, createWriteStream } from "fs";
 import { readdir, writeFile, rename, mkdir} from "fs/promises";
 import { rm as remoover } from "fs/promises";
-import path, { resolve } from "path";
+import path from "path";
+import os, { EOL } from "os";
 import SystemInfo from "./SystemInfo.js";
 import CalcHash from "./calcHash.js";
 import BrotliAlg from "./BrotliAlg.js";
+import { fileURLToPath } from "url";
+import { Transform } from "stream";
 
 
 class ComandHandler {
-    #getPath = (soursePath) => {
-        const pathArray = soursePath.split(path.sep);
-        console.log('from getPath', ...pathArray, path.resolve(...pathArray) )
-        return path.relative(path.resolve(), path.resolve(...pathArray));
+    go = () => {
+        const target = process.argv[1].split(`${path.sep}`);
+        target.pop();
+        process.chdir(path.join(...target))
+    }
+    help = async ([arg]) => {
+        const dirName = path.dirname(fileURLToPath(import.meta.url));
+        const fileInfo = path.resolve(dirName, 'helpInfo', 'helpInfo.txt');
+        const read = createReadStream(fileInfo);
+
+        if (arg) {
+            const findInfo = new Transform({
+                transform(chunk, encoding, callback) {
+                    let returnValue = chunk.toString().split('\r\n');
+                    returnValue = returnValue.filter(item => {
+                        return item.startsWith(arg)
+                     }).join('\n') + EOL;
+                    
+                    if (returnValue === "\r\n") {
+                        returnValue = 'Try use help with rigth arguments'
+                    }
+
+                    callback(null, returnValue)
+                }
+            });
+            read.pipe(findInfo).pipe(process.stdout)
+            
+        } else {
+            read.pipe(process.stdout);
+        }     
     }
 
-    logPath = () => {
-        console.log('Now You are in: ', process.cwd());
+    start = () => {
+        process.chdir(os.homedir())
     }
+
     //Navigation & working directory
 
     up = () => {

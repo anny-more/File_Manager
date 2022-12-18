@@ -21,6 +21,9 @@ class TalkWithUser {
     sayBye = () => {
         console.log(`${EOL}Thank you for using File Manager, ${this.userName}, goodbye!`);
     }
+    sayWorkingDir = () => {
+        console.log('You are currently in ', process.cwd())
+    }
 }
 
 export default new TalkWithUser();
