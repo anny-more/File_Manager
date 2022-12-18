@@ -1,6 +1,6 @@
 import {existsSync, createReadStream, createWriteStream } from "fs";
 import { readdir, writeFile, rename, mkdir} from "fs/promises";
-import { rm as remoover } from "fs/promises";
+import { rm as remover } from "fs/promises";
 import path from "path";
 import os, { EOL } from "os";
 import SystemInfo from "./SystemInfo.js";
@@ -144,35 +144,41 @@ class ComandHandler {
             
             console.log(`Where is the ${sourse}? It is in ${target}!`)
         } catch(err) {
-            console.log('Try better!', err)
+            console.log('Try better!')
         }
     }
 
     mv = async (array) => {
         const [source, target] = array;
-            try {
-                const pathToFile = path.resolve(target, source);
-                await mkdir(target, {recursive: true});
-                await writeFile(pathToFile, '', {flag: 'wx'});
+        const sourсeDir = path.dirname(source);
+        const sourceFile = path.basename(source);
+        try {
+            const pathToFile = path.resolve(target, sourceFile);
+            await mkdir(target, {recursive: true});
+            await writeFile(pathToFile, '', {flag: 'wx'});
            
-                const readStream = createReadStream(source);
-                const writeStream = createWriteStream(pathToFile);
-                readStream.pipe(writeStream)
-                .on(err => {
-                    console.log('Smth goes wrong!')
-                });
-                await remoover(source, {recursive: true});
+            const readStream = createReadStream(source);
+            const writeStream = createWriteStream(pathToFile);
+            
+            readStream
+            .pipe(writeStream)
+            .on('error', (err) => {
+                console.log('Smth goes wrong!')
+            });
+            await remoover(source, {recursive: true});
+            console.log('File was moved')
+
         }catch(err) {
             console.log("bad News")
-        } 
+        }
     }
 
     rm = async([path]) => {
         try {
-            await remoover(path, {recursive: true});
+            await remover(path, {recursive: true});
             console.log(`You\`l never see ${path} again!`);
         } catch(err) {
-            console.log('Smth went wrong!'. err)
+            console.log('Smth went wrong!')
         }
     }
     //Operating system info
