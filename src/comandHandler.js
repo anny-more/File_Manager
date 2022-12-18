@@ -1,4 +1,4 @@
-import {existsSync, createReadStream, createWriteStream } from "fs";
+import {createReadStream, createWriteStream } from "fs";
 import { readdir, writeFile, rename, mkdir} from "fs/promises";
 import { rm as remover } from "fs/promises";
 import path from "path";
@@ -101,14 +101,14 @@ class ComandHandler {
     }
     //Basic operations with files
     cat = async ([path]) => {
-
-        if (existsSync(path)) {
-            const readable = createReadStream(path, {encoding: 'utf8'});
-            readable.pipe(process.stdout);
+        const readable = createReadStream(path, {encoding: 'utf8'});
         
-        } else {
-            console.log('Smth wrong with path')
-        }
+        readable.on('error', () => {
+            console.log('Can\'t read')
+        })
+
+        readable.pipe(process.stdout);
+
     }
 
     add = async ([path]) => {
@@ -136,11 +136,20 @@ class ComandHandler {
 
         try {
             const pathToTarget = path.resolve(target, sourse)
+           
+            const readStrem = createReadStream(sourse);
+
+            readStrem.on('error', (err) => {
+                console.log('Can\'t read!');
+                readStrem.destroy()
+            })
+
             await mkdir(target, {recursive: true});
             await writeFile(pathToTarget, '', {flag: 'wx'});
+
             const writeStream = createWriteStream(pathToTarget);
             
-            createReadStream(sourse).pipe(writeStream);
+            readStrem.pipe(writeStream);
             
             console.log(`Where is the ${sourse}? It is in ${target}!`)
         } catch(err) {
@@ -165,7 +174,7 @@ class ComandHandler {
             .on('error', (err) => {
                 console.log('Smth goes wrong!')
             });
-            await remoover(source, {recursive: true});
+            await remover(source, {recursive: true});
             console.log('File was moved')
 
         }catch(err) {

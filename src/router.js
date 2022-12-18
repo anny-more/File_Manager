@@ -10,7 +10,7 @@ export const router = async (data) => {
         await ComandHandler[comand](rest);
 
     } catch(err) {
-        console.log('Please type valid comand )', err)
+        console.log('Please type valid comand )')
     }
 
 };
