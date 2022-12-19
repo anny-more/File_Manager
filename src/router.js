@@ -1,11 +1,10 @@
 import ComandHandler from "./ComandHandler.js";
+import getValidArgs from "./getValidArgs.js";
 
 export const router = async (data) => {
-    data = data.trim();
 
     try {
-        const arrayFromData = data.split(' ').filter(item => item !== '');
-        const [comand, ...rest] = arrayFromData;
+        const [comand, ...rest] = getValidArgs(data);
         await ComandHandler[comand](rest);
 
     } catch(err) {
