@@ -4,7 +4,7 @@ export const router = async (data) => {
     data = data.trim();
 
     try {
-        const arrayFromData = data.split(' ').filter(item => item !== ' ');
+        const arrayFromData = data.split(' ').filter(item => item !== '');
         const [comand, ...rest] = arrayFromData;
         await ComandHandler[comand](rest);
 

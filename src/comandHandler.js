@@ -8,7 +8,6 @@ import CalcHash from "./calcHash.js";
 import BrotliAlg from "./BrotliAlg.js";
 import { fileURLToPath } from "url";
 import { Transform } from "stream";
-import { Console } from "console";
 
 
 class ComandHandler {
