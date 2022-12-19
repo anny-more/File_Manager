@@ -6,7 +6,6 @@ export const router = async (data) => {
     try {
         const arrayFromData = data.split(' ').filter(item => item !== ' ');
         const [comand, ...rest] = arrayFromData;
-        //console.log('console from router, comand = ', comand, 'rest = ', rest)
         await ComandHandler[comand](rest);
 
     } catch(err) {
@@ -14,12 +13,3 @@ export const router = async (data) => {
     }
 
 };
-/*
-to do handle with paths
-create obj {
-    sourseFile: null;
-    sourseDir: null;
-    targetFile: null;
-    targetDir: null;
-}
-*/

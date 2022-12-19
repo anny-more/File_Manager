@@ -3,7 +3,7 @@ import os from 'os';
 
 class SystemInfo {
     EOL = () => {
-        const marker = JSON.stringify(`${EOL}`);
+        const marker = JSON.stringify(`${os.EOL}`);
         console.log('The operating system-specific end-of-line marker is ', marker)
     }
     cpus = () => {

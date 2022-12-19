@@ -8,6 +8,7 @@ import CalcHash from "./calcHash.js";
 import BrotliAlg from "./BrotliAlg.js";
 import { fileURLToPath } from "url";
 import { Transform } from "stream";
+import { Console } from "console";
 
 
 class ComandHandler {
@@ -132,16 +133,16 @@ class ComandHandler {
     }
     
     cp = async(array) => {
-        const [sourse, target] = array;
+        const [sourсe, target] = array;
 
         try {
-            const pathToTarget = path.resolve(target, sourse)
+            const pathToTarget = path.resolve(target, sourсe)
            
-            const readStrem = createReadStream(sourse);
+            const readStream = createReadStream(sourсe);
 
-            readStrem.on('error', (err) => {
+            readStream.on('error', (err) => {
                 console.log('Can\'t read!');
-                readStrem.destroy()
+                readStream.destroy()
             })
 
             await mkdir(target, {recursive: true});
@@ -149,9 +150,13 @@ class ComandHandler {
 
             const writeStream = createWriteStream(pathToTarget);
             
-            readStrem.pipe(writeStream);
+            readStream
+            .pipe(writeStream)
+            .on('error', (err) => {
+                console.log('Smth wrong!')
+            });
             
-            console.log(`Where is the ${sourse}? It is in ${target}!`)
+            console.log(`Where is the ${sourсe}? It is in ${target}!`)
         } catch(err) {
             console.log('Try better!')
         }
@@ -163,16 +168,24 @@ class ComandHandler {
         const sourceFile = path.basename(source);
         try {
             const pathToFile = path.resolve(target, sourceFile);
+            
+            const readStream = createReadStream(source);
+
+            readStream.on('error', (err) => {
+                console.log('Can\'t find sourse. Try rigth path');
+                readStream.destroy()
+            })
+
             await mkdir(target, {recursive: true});
             await writeFile(pathToFile, '', {flag: 'wx'});
            
-            const readStream = createReadStream(source);
+            
             const writeStream = createWriteStream(pathToFile);
             
             readStream
             .pipe(writeStream)
             .on('error', (err) => {
-                console.log('Smth goes wrong!')
+                console.log('Smth wrong!')
             });
             await remover(source, {recursive: true});
             console.log('File was moved')
@@ -187,14 +200,20 @@ class ComandHandler {
             await remover(path, {recursive: true});
             console.log(`You\`l never see ${path} again!`);
         } catch(err) {
-            console.log('Smth went wrong!')
+            console.log('Smth went wrong!', err)
         }
     }
     //Operating system info
     os = async([arg]) => {
         if (arg.startsWith('--')) {
             const param = arg.replace('--', '');
-            SystemInfo[param]();
+            if (SystemInfo.hasOwnProperty(param)) {
+                SystemInfo[param]();
+            } else {
+                console.log('Print relevant arg')
+                return
+            }
+
         } else {
             console.log('Print relevant arg')
             return
